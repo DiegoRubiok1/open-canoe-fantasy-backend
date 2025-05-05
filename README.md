@@ -1,2 +1,2 @@
 # fantasy-clone
-Clone of the backend from a certain spanish online mobile game.
+Clone of the backend of a certain spanish online mobile game.
