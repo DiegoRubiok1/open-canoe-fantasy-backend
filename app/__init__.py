@@ -1,7 +1,8 @@
 from .extensions import db, migrate, jwt, ma, bcrypt, cache
 from flask import Flask
 from .config import config
-# TODO: import your blueprints here
+from .api.auth import auth_bp  # noqa
+
 
 def create_app(config_name=None):
     app = Flask(__name__)
@@ -15,5 +16,5 @@ def create_app(config_name=None):
     bcrypt.init_app(app)
     cache.init_app(app)
 
-    # register blueprints here
+    app.register_blueprint(auth_bp, url_prefix='/api/auth', name='auth')
     return app

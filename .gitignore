@@ -172,3 +172,66 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Virtual Environment
+env/
+venv/
+.env
+.venv
+ENV/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+data-dev.sqlite
+
+# Secret Keys and Configurations
+.env
+*.pem
+*.key
+*.cert
+config.local.py
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+.installed.cfg
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+logs/
+log/
+
+# Development tools
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Build and dist directories
+build/
+dist/
+*.egg-info/
+
+# Documentation builds
+docs/_build/
+/site
+
+# Dependencies
+Pipfile.lock
+poetry.lock

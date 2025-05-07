@@ -1,12 +1,14 @@
 -- Esquema de base de datos profesional para producción
 -- Uso de UUIDs, timestamps, índices y campos de auditoría
 
+-- Create database with proper encoding
 CREATE DATABASE IF NOT EXISTS `opencanoefantasy`
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
--- Create the user (if not exists) and grant privileges
-CREATE USER IF NOT EXISTS 'fantasy'@'localhost' IDENTIFIED BY 'fantasy123';
+-- Handle user creation and privileges safely
+DROP USER IF EXISTS 'fantasy'@'localhost';
+CREATE USER 'fantasy'@'localhost' IDENTIFIED BY 'fantasy123';
 GRANT ALL PRIVILEGES ON `opencanoefantasy`.* TO 'fantasy'@'localhost';
 FLUSH PRIVILEGES;
 
@@ -23,7 +25,7 @@ DROP TABLE IF EXISTS users;
 
 -- Tabla: users (usuarios)
 CREATE TABLE users (
-    id CHAR(36) PRIMARY KEY,
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
@@ -41,7 +43,7 @@ CREATE TABLE users (
 
 -- Tabla: leagues (ligas)
 CREATE TABLE leagues (
-    id CHAR(36) PRIMARY KEY,
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     code VARCHAR(10) NOT NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -52,8 +54,8 @@ CREATE TABLE leagues (
 -- Tabla: user_leagues (usuarios_ligas)
 -- Relación many-to-many entre users y leagues, con presupuesto y puntos por usuario en cada liga
 CREATE TABLE user_leagues (
-    user_id CHAR(36),
-    league_id CHAR(36),
+    user_id BIGINT UNSIGNED,
+    league_id BIGINT UNSIGNED,
     budget DECIMAL(12,2) NOT NULL DEFAULT 1000,
     points INT NOT NULL DEFAULT 0,
     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -64,9 +66,9 @@ CREATE TABLE user_leagues (
 
 -- Tabla: teams (equipos)
 CREATE TABLE teams (
-    id CHAR(36) PRIMARY KEY,
-    user_id CHAR(36) NOT NULL,
-    league_id CHAR(36) NOT NULL,
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNSIGNED NOT NULL,
+    league_id BIGINT UNSIGNED NOT NULL,
     name VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -77,23 +79,23 @@ CREATE TABLE teams (
 
 -- Tabla: players (deportistas)
 CREATE TABLE players (
-    id CHAR(36) PRIMARY KEY,
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
-    category VARCHAR(50),
-    club VARCHAR(100),
+    category VARCHAR(50) NOT NULL,
+    club VARCHAR(100) NOT NULL,
     market_price DECIMAL(12,2) NOT NULL,
     points INT NOT NULL DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Tabla: team_players (equipos_deportistas)
 -- Relación many-to-many entre teams y players
 CREATE TABLE team_players (
-    team_id CHAR(36) NOT NULL,
-    player_id CHAR(36) NOT NULL,
+    team_id BIGINT UNSIGNED NOT NULL,
+    player_id BIGINT UNSIGNED NOT NULL,
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (team_id, player_id),
+        PRIMARY KEY (team_id, player_id),
     FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
     FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
 );
@@ -101,8 +103,8 @@ CREATE TABLE team_players (
 -- Tabla: market (mercado)
 -- Jugadores disponibles en el mercado por liga
 CREATE TABLE market (
-    league_id CHAR(36) NOT NULL,
-    player_id CHAR(36) NOT NULL,
+    league_id BIGINT UNSIGNED NOT NULL,
+    player_id BIGINT UNSIGNED NOT NULL,
     available_from TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     price DECIMAL(12,2) NOT NULL,
     PRIMARY KEY (league_id, player_id),
@@ -116,6 +118,7 @@ CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_teams_user_league ON teams(user_id, league_id);
 CREATE INDEX idx_players_club ON players(club);
 CREATE INDEX idx_market_league_price ON market(league_id, price);
+CREATE INDEX idx_market_player_price ON market(player_id, price);
 
 -- Triggers para actualizar updated_at automáticamente
 DELIMITER //
@@ -149,3 +152,9 @@ BEGIN
 END//
 
 DELIMITER ;
+
+ALTER TABLE market
+ADD CONSTRAINT chk_price CHECK (price >= 0);
+
+ALTER TABLE users
+ADD CONSTRAINT chk_status CHECK (status IN ('active', 'suspended', 'deleted'));
