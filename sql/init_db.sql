@@ -1,10 +1,30 @@
 -- Esquema de base de datos profesional para producción
 -- Uso de UUIDs, timestamps, índices y campos de auditoría
 
+CREATE DATABASE IF NOT EXISTS `opencanoefantasy`
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+-- Create the user (if not exists) and grant privileges
+CREATE USER IF NOT EXISTS 'fantasy'@'localhost' IDENTIFIED BY 'fantasy123';
+GRANT ALL PRIVILEGES ON `opencanoefantasy`.* TO 'fantasy'@'localhost';
+FLUSH PRIVILEGES;
+
+USE `opencanoefantasy`;
+
+-- Drop existing tables in reverse order of dependencies
+DROP TABLE IF EXISTS market;
+DROP TABLE IF EXISTS team_players;
+DROP TABLE IF EXISTS players;
+DROP TABLE IF EXISTS teams;
+DROP TABLE IF EXISTS user_leagues;
+DROP TABLE IF EXISTS leagues;
+DROP TABLE IF EXISTS users;
+
 -- Tabla: users (usuarios)
 CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    username VARCHAR(50) NOT NULL UNIQUE,
+    id CHAR(36) PRIMARY KEY,
+    username VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     first_name VARCHAR(100),
@@ -12,74 +32,82 @@ CREATE TABLE users (
     phone VARCHAR(20),
     role VARCHAR(20) NOT NULL DEFAULT 'user',       -- e.g. user, admin
     status VARCHAR(20) NOT NULL DEFAULT 'active',   -- e.g. active, suspended
-    email_verified_at TIMESTAMP WITH TIME ZONE,
-    last_login_at TIMESTAMP WITH TIME ZONE,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    deleted_at TIMESTAMP WITH TIME ZONE               -- para soft-delete
+    email_verified_at TIMESTAMP NULL,
+    last_login_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL
 );
 
 -- Tabla: leagues (ligas)
 CREATE TABLE leagues (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(100) NOT NULL UNIQUE,
+    id CHAR(36) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
     code VARCHAR(10) NOT NULL UNIQUE,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    deleted_at TIMESTAMP WITH TIME ZONE
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL
 );
 
 -- Tabla: user_leagues (usuarios_ligas)
 -- Relación many-to-many entre users y leagues, con presupuesto y puntos por usuario en cada liga
 CREATE TABLE user_leagues (
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    league_id UUID NOT NULL REFERENCES leagues(id) ON DELETE CASCADE,
-    budget NUMERIC(12,2) NOT NULL DEFAULT 1000,
-    points INTEGER NOT NULL DEFAULT 0,
-    joined_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    PRIMARY KEY (user_id, league_id)
+    user_id CHAR(36),
+    league_id CHAR(36),
+    budget DECIMAL(12,2) NOT NULL DEFAULT 1000,
+    points INT NOT NULL DEFAULT 0,
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, league_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (league_id) REFERENCES leagues(id) ON DELETE CASCADE
 );
 
 -- Tabla: teams (equipos)
 CREATE TABLE teams (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    league_id UUID NOT NULL REFERENCES leagues(id) ON DELETE CASCADE,
+    id CHAR(36) PRIMARY KEY,
+    user_id CHAR(36) NOT NULL,
+    league_id CHAR(36) NOT NULL,
     name VARCHAR(100) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    UNIQUE(user_id, league_id, name)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE(user_id, league_id, name),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (league_id) REFERENCES leagues(id) ON DELETE CASCADE
 );
 
 -- Tabla: players (deportistas)
 CREATE TABLE players (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id CHAR(36) PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
     category VARCHAR(50),
     club VARCHAR(100),
-    market_price NUMERIC(12,2) NOT NULL,
-    points INTEGER NOT NULL DEFAULT 0,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+    market_price DECIMAL(12,2) NOT NULL,
+    points INT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Tabla: team_players (equipos_deportistas)
 -- Relación many-to-many entre teams y players
 CREATE TABLE team_players (
-    team_id UUID NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
-    player_id UUID NOT NULL REFERENCES players(id) ON DELETE CASCADE,
-    added_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    PRIMARY KEY (team_id, player_id)
+    team_id CHAR(36) NOT NULL,
+    player_id CHAR(36) NOT NULL,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (team_id, player_id),
+    FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
+    FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
 );
 
 -- Tabla: market (mercado)
 -- Jugadores disponibles en el mercado por liga
 CREATE TABLE market (
-    league_id UUID NOT NULL REFERENCES leagues(id) ON DELETE CASCADE,
-    player_id UUID NOT NULL REFERENCES players(id) ON DELETE CASCADE,
-    available_from TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    price NUMERIC(12,2) NOT NULL,
-    PRIMARY KEY (league_id, player_id)
+    league_id CHAR(36) NOT NULL,
+    player_id CHAR(36) NOT NULL,
+    available_from TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    price DECIMAL(12,2) NOT NULL,
+    PRIMARY KEY (league_id, player_id),
+    FOREIGN KEY (league_id) REFERENCES leagues(id) ON DELETE CASCADE,
+    FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
 );
 
 -- Índices adicionales para optimizar consultas frecuentes
@@ -90,19 +118,34 @@ CREATE INDEX idx_players_club ON players(club);
 CREATE INDEX idx_market_league_price ON market(league_id, price);
 
 -- Triggers para actualizar updated_at automáticamente
-CREATE OR REPLACE FUNCTION set_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-   NEW.updated_at = now();
-   RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+DELIMITER //
 
--- Asociar trigger en tablas con updated_at
-DO $$
+CREATE TRIGGER trg_users_updated_at 
+    BEFORE UPDATE ON users
+    FOR EACH ROW
 BEGIN
-  FOR tbl IN ARRAY['users','leagues','teams','players'] LOOP
-    EXECUTE format('CREATE TRIGGER trg_%I_updated_at BEFORE UPDATE ON %I FOR EACH ROW EXECUTE FUNCTION set_updated_at()', tbl, tbl);
-  END LOOP;
-END;
-$$;
+    SET NEW.updated_at = CURRENT_TIMESTAMP;
+END//
+
+CREATE TRIGGER trg_leagues_updated_at 
+    BEFORE UPDATE ON leagues
+    FOR EACH ROW
+BEGIN
+    SET NEW.updated_at = CURRENT_TIMESTAMP;
+END//
+
+CREATE TRIGGER trg_teams_updated_at 
+    BEFORE UPDATE ON teams
+    FOR EACH ROW
+BEGIN
+    SET NEW.updated_at = CURRENT_TIMESTAMP;
+END//
+
+CREATE TRIGGER trg_players_updated_at 
+    BEFORE UPDATE ON players
+    FOR EACH ROW
+BEGIN
+    SET NEW.updated_at = CURRENT_TIMESTAMP;
+END//
+
+DELIMITER ;
