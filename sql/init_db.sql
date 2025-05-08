@@ -94,6 +94,8 @@ CREATE TABLE players (
 CREATE TABLE team_players (
     team_id BIGINT UNSIGNED NOT NULL,
     player_id BIGINT UNSIGNED NOT NULL,
+    clause DECIMAL(12,2) NOT NULL,
+    titular BOOLEAN NOT NULL DEFAULT FALSE,
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (team_id, player_id),
     FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,

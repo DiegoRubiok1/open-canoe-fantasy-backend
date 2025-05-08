@@ -34,8 +34,10 @@ Today I implemented and tested the leagues management features.
 - [x] Documented API endpoints
 
 **Next Tasks:**
+- [ ] Document new estructure
 - [ ] Teams management:
-    - [ ] Implement Team model
+    - [ ] Implement Team and Player model
+    - [ ] Modify `team_players` adding to field: `titular` and `price`  
     - [ ] Create team creation endpoint
     - [ ] Add team listing endpoint
     - [ ] Document team endpoints
