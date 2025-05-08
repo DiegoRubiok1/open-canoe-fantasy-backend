@@ -33,7 +33,8 @@ def login():
         return jsonify(result), 401
     
     user = result['user']
-    access_token = create_access_token(identity=user.id)
+    # Convert user.id to string for JWT
+    access_token = create_access_token(identity=str(user.id))
     
     return jsonify({
         'access_token': access_token,

@@ -102,7 +102,7 @@ Each file defines a SQLAlchemy `db.Model`:
 Domain-based Blueprint structure:
 
 * `routes.py`: defines REST endpoints (GET, POST, PUT, DELETE).
-* `schemas.py`: request/response validation with Marshmallow or Pydantic.
+* `controllers.py`: Logic and functions for routes.
 
 ### 6. `app/services/`
 
@@ -144,9 +144,4 @@ Organized pytest structure:
 
 * **`.env`** and **`.flaskenv`**: environment-specific config.
 * **`requirements.txt`**: all Python packages used.
-* **`Dockerfile`** and **`docker-compose.yml`**: container configurations.
 * **`run.py`**: runs the app using `create_app()`.
-
----
-
-This structure ensures a clean, scalable, and testable Flask backend that’s production-ready and easy to maintain.
