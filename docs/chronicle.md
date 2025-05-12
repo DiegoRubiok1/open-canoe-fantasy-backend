@@ -34,10 +34,52 @@ Today I implemented and tested the leagues management features.
 - [x] Documented API endpoints
 
 **Next Tasks:**
-- [ ] Document new estructure
+- [x] Document new estructure
 - [ ] Teams management:
-    - [ ] Implement Team and Player model
-    - [ ] Modify `team_players` adding to field: `titular` and `price`  
-    - [ ] Create team creation endpoint
-    - [ ] Add team listing endpoint
+    - [x] Implement Team and Player model
+    - [x] Modify `team_players` adding to field: `titular` and `clause`  
+    - [x] Create team creation endpoint
+    - [x] Add team listing endpoint
+    - [x] Test team endpoints
     - [ ] Document team endpoints
+
+## May 9, 2025
+
+Today I implemented team management features and created test scripts.
+
+**Completed Tasks:**
+- [x] Created TeamPlayer association model
+- [x] Implemented team creation endpoint
+- [x] Added player assignment to teams
+- [x] Created team listing endpoints
+- [x] Created test script for team endpoints
+
+## May 11, 2025
+
+Today I worked on fixing relationship issues and implementing the market feature.
+
+**Completed Tasks:**
+- [x] Fixed SQLAlchemy relationship warnings
+- [x] Added overlaps parameter to handle relationship conflicts
+- [x] Implemented Market model with proper constraints
+- [x] Added market initialization on league creation
+- [x] Created market update service
+- [x] Fixed Team-Player associations
+- [x] Updated API documentation
+
+**Next Tasks:**
+- [ ] Market management:
+    - [ ] Implement market listing endpoint
+    - [ ] Add player purchase endpoint
+    - [ ] Add player sale endpoint
+    - [ ] Test market endpoints
+    - [ ] Document market API
+- [ ] Player management:
+    - [ ] Add player statistics update
+    - [ ] Implement player points calculation
+    - [ ] Create player listing endpoint
+    - [ ] Test player endpoints
+    - [ ] Document player API
+
+
+

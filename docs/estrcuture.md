@@ -13,25 +13,32 @@ fantasy-backend/
 │   │   ├── user.py            # User model
 │   │   ├── player.py          # Player model
 │   │   ├── team.py            # Team model
-│   │   ├── match.py           # Match model
-│   │   └── fantasy_team.py    # Fantasy team model
+│   │   ├── league.py          # League model
+│   │   └── user_laegue.py     # Relation model
+│   │   └── team_player.py     # Relation model
+│   │   └── market.py          # Market model
 │   ├── api/                   # API Blueprints
 │   │   ├── __init__.py
 │   │   ├── auth/              # Authentication (login, register)
+│   │   │   ├── __init__.py
 │   │   │   ├── routes.py
-│   │   │   └── schemas.py
+│   │   │   └── controllers.py
 │   │   ├── users/             # User endpoints
+│   │   │   ├── __init__.py
 │   │   │   ├── routes.py
-│   │   │   └── schemas.py
+│   │   │   └── controllers.py
 │   │   ├── players/           # Player endpoints
+│   │   │   ├── __init__.py
 │   │   │   ├── routes.py
-│   │   │   └── schemas.py
+│   │   │   └── controllers.py
 │   │   ├── teams/             # Team endpoints
+│   │   │   ├── __init__.py
 │   │   │   ├── routes.py
-│   │   │   └── schemas.py
-│   │   └── fantasy/           # Fantasy logic (lineups, scores)
+│   │   │   └── controllers.py
+│   │   └── market/           # Fantasy logic (lineups, scores)
+│   │       ├── __init__.py
 │   │       ├── routes.py
-│   │       └── schemas.py
+│   │       └── controllers.py
 │   ├── services/              # Business logic services
 │   │   ├── auth_service.py
 │   │   ├── player_service.py
@@ -44,8 +51,6 @@ fantasy-backend/
 │   ├── init_db.sql            # Create database and tables
 │   └── seed_data.sql          # Insert static data (players, teams)
 │
-├── migrations/                # Alembic/Flask-Migrate versioning folder
-│
 ├── tests/                     # Unit and integration tests (pytest)
 │   ├── conftest.py            # Fixtures (app, client, in-memory DB)
 │   ├── test_auth.py
@@ -53,10 +58,7 @@ fantasy-backend/
 │   └── test_fantasy.py
 │
 ├── .env                       # Environment variables (should not be committed)
-├── .flaskenv                  # FLASK_APP, FLASK_ENV setup
 ├── requirements.txt           # Python dependencies
-├── Dockerfile                 # Docker image configuration
-├── docker-compose.yml         # Compose services (Postgres, Redis, etc.)
 └── run.py                     # App entry point
 ```
 
@@ -94,7 +96,7 @@ jwt = JWTManager()
 
 Each file defines a SQLAlchemy `db.Model`:
 
-* Models for users, players, matches, teams, and fantasy teams.
+* Models for users, players, leagues, teams, and more.
 * Includes methods such as stats calculations or relationships.
 
 ### 5. `app/api/`
@@ -124,7 +126,7 @@ Utility and helper functions:
 Standalone SQL scripts:
 
 * **`init_db.sql`**: initializes database and tables using DDL.
-* **`seed_data.sql`**: seeds initial data like players, teams, and leagues.
+* **`seed_data.sql`**: seeds initial data like players.
 
 ### 9. `migrations/`
 

@@ -2,4 +2,5 @@ from flask import Blueprint
 
 leagues_bp = Blueprint('leagues', __name__)
 
-from . import routes  # noqa
+# Import routes AFTER blueprint creation
+from . import routes  # This line is crucial

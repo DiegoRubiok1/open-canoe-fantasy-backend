@@ -1,8 +1,9 @@
-from datetime import datetime
 from app.models.league import League
 from app.models.user import User
-from app.models.user_league import UserLeague  # Fix import name
+from app.models.user_league import UserLeague  
+from app.models.team import Team
 from app.extensions import db
+from app.services.market import update_market
 import random
 import string
 
@@ -36,15 +37,18 @@ def create_league(data):
         )
         
         user_league = UserLeague(
+            league_id = league.id,
             user_id=user.id,
             budget=data.get('budget', 100000.0),
-            points=0
         )
         
         league.user_memberships.append(user_league)
         
         db.session.add(league)
         db.session.commit()
+        
+        # Creates the market for the league
+        update_market(league.id)
 
         return {
             'message': 'League created successfully',
