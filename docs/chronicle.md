@@ -41,7 +41,7 @@ Today I implemented and tested the leagues management features.
     - [x] Create team creation endpoint
     - [x] Add team listing endpoint
     - [x] Test team endpoints
-    - [ ] Document team endpoints
+    - [x] Document team endpoints
 
 ## May 9, 2025
 

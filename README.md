@@ -51,16 +51,18 @@ python run.py
 
 ## API Documentation
 
+- [Postman](https://diegorubio-9571708.postman.co/workspace/Diego-Rubio-'s-Workspace~327f5f9d-5937-4fa4-8aa5-c3550ee7f045/collection/44761627-87ddde8a-7ecc-49ba-9976-b016e9268896?action=share&creator=44761627)
 - [Authentication](docs/api_docs/auth.md)
 - [Leagues](docs/api_docs/leagues.md)
 - [Teams](docs/api_docs/teams.md)
 - [Market](docs/api_docs/market.md)
 
+
 ## Project Structure
 
 ```
 open-canoe-fantasy/
-├── app/                    # Application package
+├── app/                   # Application package
 │   ├── api/               # API endpoints
 │   ├── models/            # Database models
 │   ├── services/          # Business logic
@@ -73,6 +75,8 @@ open-canoe-fantasy/
 Check complete estructure in [structure](/docs/structure.md)
 
 ## Contributing
+
+Join [discord]() there we can collaborate. Then:
 
 1. Fork the repository
 2. Create a feature branch

@@ -3,7 +3,7 @@ from app.models.user import User
 from app.models.user_league import UserLeague  
 from app.models.team import Team
 from app.extensions import db
-from app.services.market import update_market
+from app.services.market_service import update_market
 import random
 import string
 

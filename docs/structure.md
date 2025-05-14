@@ -1,6 +1,6 @@
-# Flask Backend Project Structure for LaLiga Fantasy Clone
+# Flask Backend Project Structure for Open Canoe Fantasy
 
-This document outlines the folder and file structure for a Flask backend designed to replicate LaLiga Fantasy. It follows the **Application Factory** pattern and **Blueprints** for modularity, with support for migrations, testing, and Docker deployment.
+This document outlines the folder and file structure. It follows the **Application Factory** pattern and **Blueprints** for modularity.
 
 ```bash
 fantasy-backend/
@@ -40,22 +40,14 @@ fantasy-backend/
 │   │       ├── routes.py
 │   │       └── controllers.py
 │   ├── services/              # Business logic services
-│   │   ├── auth_service.py
-│   │   ├── player_service.py
-│   │   └── fantasy_service.py
+│   │   └── market_service.py
 │   └── utils/                 # Helpers and validators
-│       ├── helpers.py
-│       └── validators.py
-│
+│ 
 ├── sql/                       # SQL scripts for DB initialization and seeding
 │   ├── init_db.sql            # Create database and tables
 │   └── seed_data.sql          # Insert static data (players, teams)
 │
 ├── tests/                     # Unit and integration tests (pytest)
-│   ├── conftest.py            # Fixtures (app, client, in-memory DB)
-│   ├── test_auth.py
-│   ├── test_players.py
-│   └── test_fantasy.py
 │
 ├── .env                       # Environment variables (should not be committed)
 ├── requirements.txt           # Python dependencies
@@ -112,14 +104,11 @@ Encapsulates business logic separate from API routes:
 
 * Fantasy score calculation.
 * Transfers and drafting logic.
-* Auth workflows and token generation.
+* Market logic and functions.
 
-### 7. `app/utils/`
+### 7. `app/utils/` 
 
-Utility and helper functions:
-
-* Custom validators.
-* Date formatting, stats helpers, etc.
+Utility and auxiliar functions.
 
 ### 8. `sql/`
 
@@ -130,17 +119,14 @@ Standalone SQL scripts:
 
 ### 9. `migrations/`
 
-Directory managed by Alembic:
+Directory managed by Alembic: (not implemented)
 
 * Tracks schema changes.
 * Supports `flask db migrate` and `flask db upgrade`.
 
 ### 10. `tests/`
 
-Organized pytest structure:
-
-* `conftest.py`: fixtures for test app and database.
-* Unit/integration tests for auth, player routes, and fantasy features.
+Diferent tests for endpoints. 
 
 ### 11. Root Files
 

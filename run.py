@@ -1,6 +1,6 @@
 from app import create_app
 from app.extensions import db
-# Import models explicitly to ensure proper loading order
+
 from app.models.user import User
 from app.models.league import League
 from app.models.team import Team
