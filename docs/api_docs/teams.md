@@ -48,16 +48,50 @@ Content-Type: application/json
 }
 ```
 
-### Get Team Details
+### Show Team Details
 ```http
-GET /api/teams/teams/{team_id}
+GET /api/teams/show/{team_id}
 Authorization: Bearer <jwt_token>
+```
+
+**Success Response (200)**
+```json
+{
+    "created_at": "2025-05-15T12:05:08",
+    "id": 2,
+    "league_id": 3,
+    "name": "club_diego",
+    "players": [],
+    "updated_at": "2025-05-15T12:05:08"
+}
 ```
 
 ### List League Teams
 ```http
-GET /api/teams/leagues/{league_id}/teams
+GET /api/teams/leagues/{league_id}/show
 Authorization: Bearer <jwt_token>
+```
+
+**Success Response (200)**
+```json
+{
+{
+    "league_id": 12,
+    "teams": [
+        {
+            "created_at": "2025-05-12T11:16:28",
+            "id": 1,
+            "name": "club_diego",
+            "owner": {
+                "id": 1,
+                "username": "ejemplo"
+            },
+            "players_count": 0,
+            "total_points": 0
+        }
+    ]
+}
+}
 ```
 
 ## Testing Example

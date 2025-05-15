@@ -50,7 +50,7 @@ def set_team_players():
     result, status_code = set_team(user_id, team_id, player_ids)
     return jsonify(result), status_code
 
-@teams_bp.route('/teams/<int:team_id>', methods=['GET'])
+@teams_bp.route('/show/<int:team_id>', methods=['GET'])
 @jwt_required()
 def show_team(team_id):
     """Get team details with its players and their contract details."""
@@ -58,7 +58,7 @@ def show_team(team_id):
     result, status_code = get_team_details(user_id, team_id)
     return jsonify(result), status_code
 
-@teams_bp.route('/leagues/<int:league_id>/teams', methods=['GET'])
+@teams_bp.route('/leagues/<int:league_id>/show', methods=['GET'])
 @jwt_required()
 def list_league_teams(league_id):
     """Get all teams in a specific league."""

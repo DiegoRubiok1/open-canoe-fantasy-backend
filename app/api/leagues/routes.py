@@ -20,3 +20,9 @@ def show():
     user_id = int(get_jwt_identity())
     result, status_code = get_user_leagues(user_id)
     return jsonify(result), status_code
+
+@leagues_bp.route('/users/show/<int:league_id>', methods=['GET'])
+@jwt_required()
+def show_users(league_id: int):
+    #TODO: SHOW USERS IN LEAGUE
+    pass
