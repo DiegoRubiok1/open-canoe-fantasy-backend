@@ -24,7 +24,7 @@ A fantasy canoe backend API built with Flask and SQLAlchemy, inspired by popular
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/open-canoe-fantasy.git
+git clone https://github.com/DiegoRubiok1/open-canoe-fantasy.git
 cd open-canoe-fantasy
 ```
 
@@ -76,7 +76,8 @@ Check complete estructure in [structure](/docs/structure.md)
 
 ## Contributing
 
-Join [discord]() there we can collaborate. Then:
+Join [discord](https://discord.gg/ZqxABhMAtz) where we will talk about collaborate. 
+Of course if yoy have features to implement:
 
 1. Fork the repository
 2. Create a feature branch
