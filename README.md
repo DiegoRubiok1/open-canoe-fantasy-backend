@@ -1,4 +1,4 @@
-# Open Canoe Fantasy
+# Open Canoe Fantasy Backend
 
 A fantasy canoe backend API built with Flask and SQLAlchemy, inspired by popular fantasy sport games.
 
