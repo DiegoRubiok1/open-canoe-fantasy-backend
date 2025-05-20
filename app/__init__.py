@@ -1,6 +1,6 @@
 from flask import Flask
 from .config import config
-from .extensions import db, migrate, jwt, ma, bcrypt, cache
+from .extensions import db, migrate, jwt, bcrypt, cache
 from .api.auth import auth_bp
 from .api.leagues import leagues_bp
 from .api.teams import teams_bp
@@ -15,7 +15,6 @@ def create_app(config_name=None):
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
-    ma.init_app(app)
     bcrypt.init_app(app)
     cache.init_app(app)
     
