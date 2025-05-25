@@ -4,6 +4,7 @@ from .extensions import db, migrate, jwt, bcrypt, cache
 from .api.auth import auth_bp
 from .api.leagues import leagues_bp
 from .api.teams import teams_bp
+from .api.market import market_bp
 
 def create_app(config_name=None):
     app = Flask(__name__)
@@ -22,5 +23,6 @@ def create_app(config_name=None):
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(leagues_bp, url_prefix='/api/leagues')
     app.register_blueprint(teams_bp, url_prefix='/api/teams')
+    app.register_blueprint(market_bp, url_prefix='/api/market')
     
     return app

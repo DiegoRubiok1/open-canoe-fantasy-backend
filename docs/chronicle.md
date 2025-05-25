@@ -67,6 +67,46 @@ Today I worked on fixing relationship issues and implementing the market feature
 - [x] Fixed Team-Player associations
 - [x] Updated API documentation
 
+## May 12, 2025
+
+Today I focused on fixing critical bugs and improving documentation.
+
+**Completed Tasks:**
+- [x] Fixed market logic implementation
+- [x] Improved league creation endpoint
+- [x] Refined team and player models
+- [x] Updated README.md
+- [x] Updated requirements documentation
+
+## May 14-15, 2025
+
+Focused on documentation and API testing.
+
+**Completed Tasks:**
+- [x] Updated API documentation
+- [x] Tested and documented team endpoints
+- [x] Refined API documentation structure
+
+## May 16, 2025
+
+Implemented new league features and improved documentation.
+
+**Completed Tasks:**
+- [x] Added league join functionality
+- [x] Implemented endpoint to show users in a league
+- [x] Updated README.md with new features
+- [x] Enhanced documentation coverage
+
+## May 20, 2025
+
+Major code refactoring session.
+
+**Completed Tasks:**
+- [x] Removed unnecessary code
+- [x] Reorganized codebase structure
+- [x] Improved code organization
+- [x] Cleaned up redundant files
+
 **Next Tasks:**
 - [ ] Market management:
     - [ ] Implement market listing endpoint
@@ -74,12 +114,6 @@ Today I worked on fixing relationship issues and implementing the market feature
     - [ ] Add player sale endpoint
     - [ ] Test market endpoints
     - [ ] Document market API
-- [ ] Player management:
-    - [ ] Add player statistics update
-    - [ ] Implement player points calculation
-    - [ ] Create player listing endpoint
-    - [ ] Test player endpoints
-    - [ ] Document player API
 
 
 
