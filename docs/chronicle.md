@@ -109,11 +109,12 @@ Major code refactoring session.
 
 **Next Tasks:**
 - [ ] Market management:
-    - [ ] Implement market listing endpoint
-    - [ ] Add player purchase endpoint
+    - [x] Implement market listing endpoint
+    - [x] Add player purchase endpoint
     - [ ] Add player sale endpoint
     - [ ] Test market endpoints
     - [ ] Document market API
+FIX BUG WITH PURCHASE ENDPOINT
 
 
 
