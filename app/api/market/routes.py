@@ -1,6 +1,6 @@
 from . import market_bp
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from .controllers import show_market, purchase_player, sell_player
+from .controllers import show_market, purchase_player, sell_player_market
 from app.models.user import User
 from flask import request, jsonify
 
@@ -66,4 +66,4 @@ def sell_player():
     if not user_id:
         return {"message": "User not authenticated."}, 401
     
-    return sell_player(user_id, request.get_json())
+    return sell_player_market(user_id, request.get_json())

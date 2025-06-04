@@ -107,14 +107,18 @@ Major code refactoring session.
 - [x] Improved code organization
 - [x] Cleaned up redundant files
 
+## June 4, 2025
+
+Today I focused on fixing market functionality and improving documentation.
+
+**Completed Tasks:**
+- [x] Implemented market endpoints and features
+- [x] Created comprehensive market API documentation
+- [x] Improved error handling in market controllers
+- [x] Fixed price calculation logic using Decimal instead of float
+
 **Next Tasks:**
-- [ ] Market management:
-    - [x] Implement market listing endpoint
-    - [x] Add player purchase endpoint
-    - [ ] Add player sale endpoint
-    - [ ] Test market endpoints
-    - [ ] Document market API
-FIX BUG WITH PURCHASE ENDPOINT
+- [ ] Make a demo frontend with kivy.
 
 
 

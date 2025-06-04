@@ -7,6 +7,7 @@ from app.models.user_league import UserLeague
 from app.models.team_player import TeamPlayer
 from app.extensions import db
 from app.services.market_service import update_market
+from decimal import Decimal
 
 def show_market(league_id: int) -> tuple[dict, int]:
     """
@@ -118,7 +119,7 @@ def purchase_player(league_id: int, player_id: int, user_id: int) -> tuple[dict,
         db.session.rollback()
         return {"message": f"Error purchasing player: {str(e)}"}, 500
 
-def sell_player(user_id: int, data: dict) -> tuple[dict, int]:
+def sell_player_market(user_id: int, data: dict) -> tuple[dict, int]:
     """Sell a player in the market."""
     league_id = data.get('league_id')
     player_id = data.get('player_id')
@@ -155,15 +156,15 @@ def sell_player(user_id: int, data: dict) -> tuple[dict, int]:
             return {"message": "Player not found."}, 404
 
         # Calculate sale price
-        SALE_PRICE_FACTOR = 0.9
-        sale_price = player.market_price * SALE_PRICE_FACTOR
+        SALE_PRICE_FACTOR = Decimal('0.9')  # Convert to Decimal
+        sale_price = player.market_price * SALE_PRICE_FACTOR  # Now both are Decimal
 
         # Do transaction
         try:
             market_entry = Market(
                 league_id=league_id,
                 player_id=player_id,
-                price=sale_price
+                price=player.market_price
             )
             db.session.add(market_entry)
 
