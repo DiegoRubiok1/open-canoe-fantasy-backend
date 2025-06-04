@@ -117,3 +117,78 @@ def purchase_player(league_id: int, player_id: int, user_id: int) -> tuple[dict,
     except Exception as e:
         db.session.rollback()
         return {"message": f"Error purchasing player: {str(e)}"}, 500
+
+def sell_player(user_id: int, data: dict) -> tuple[dict, int]:
+    """Sell a player in the market."""
+    league_id = data.get('league_id')
+    player_id = data.get('player_id')
+
+    if not league_id or not player_id:
+        return {"message": "Missing required parameters."}, 400
+
+    try:
+        # Initial validations
+        user = User.query.get(user_id)
+        if not user:
+            return {"message": "User not found."}, 404
+
+        user_league = UserLeague.query.filter_by(user_id=user_id, league_id=league_id).first()
+        if not user_league:
+            return {"message": "User is not a member of this league."}, 403
+
+        team = Team.query.filter_by(user_id=user_id, league_id=league_id).first()
+        if not team:
+            return {"message": "User does not have a team in this league."}, 404
+
+        # validate player and state
+        team_player = TeamPlayer.query.filter_by(team_id=team.id, player_id=player_id).first()
+        if not team_player:
+            return {"message": "Player is not in your team."}, 404
+
+        # Verify if player is titular
+        if team_player.titular:
+            return {"message": "Cannot sell a titular player."}, 400
+
+        # Get player price in the market
+        player = Player.query.get(player_id)
+        if not player:
+            return {"message": "Player not found."}, 404
+
+        # Calculate sale price
+        SALE_PRICE_FACTOR = 0.9
+        sale_price = player.market_price * SALE_PRICE_FACTOR
+
+        # Do transaction
+        try:
+            market_entry = Market(
+                league_id=league_id,
+                player_id=player_id,
+                price=sale_price
+            )
+            db.session.add(market_entry)
+
+            # Actualizar presupuesto
+            user_league.budget += sale_price
+
+            # Eliminar jugador del equipo
+            db.session.delete(team_player)
+
+            db.session.commit()
+
+            return {
+                "message": "Player sold successfully.",
+                "market_entry": {
+                    "id": market_entry.player.id,
+                    "name": market_entry.player.name,
+                    "price": float(market_entry.price),
+                    "days_listed": 0
+                },
+                "new_budget": float(user_league.budget)
+            }, 200
+
+        except Exception as e:
+            db.session.rollback()
+            return {"message": f"Transaction failed: {str(e)}"}, 500
+
+    except Exception as e:
+        return {"message": f"Error selling player: {str(e)}"}, 500

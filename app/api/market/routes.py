@@ -1,6 +1,6 @@
 from . import market_bp
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from .controllers import show_market, purchase_player
+from .controllers import show_market, purchase_player, sell_player
 from app.models.user import User
 from flask import request, jsonify
 
@@ -47,4 +47,23 @@ def buy_player():
     if not league_id or not player_id:
         return {"message": "Missing required parameters."}, 400
     
-    return purchase_player(league_id, player_id, user_id)    
+    return purchase_player(league_id, player_id, user_id)   
+
+@market_bp.route('/sell', methods=['POST'])
+@jwt_required()
+def sell_player():
+    """
+    Sell a player in the market.
+    
+    Expects JSON payload with:
+        - league_id: ID of the league to sell in
+        - player_id: ID of the player to sell
+    Returns:
+        tuple: (response_data, status_code)
+    """
+    user_id = get_jwt_identity()
+    
+    if not user_id:
+        return {"message": "User not authenticated."}, 401
+    
+    return sell_player(user_id, request.get_json())
